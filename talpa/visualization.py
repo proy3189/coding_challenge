@@ -21,3 +21,12 @@ def data_distribution(df):
     filename = os.path.join(path, "data_distribution.png")
     plt.savefig(filename)
     plt.show()
+
+
+def plot_metrics(name,df):
+    ax = df.plot.bar(rot=0)
+    path = os.path.join(os.getcwd(), "plots")
+
+    filename = os.path.join(path, name+"_metrics.png")
+    plt.savefig(filename)
+    plt.show()

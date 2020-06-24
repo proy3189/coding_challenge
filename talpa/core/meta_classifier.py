@@ -16,5 +16,5 @@ class MetaClassifier(ABC):
         raise NotImplementedError
 
 
-    def predict_scores(self, data, **kwargs):
+    def predict_scores(self, data,y, **kwargs):
         raise NotImplementedError
