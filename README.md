@@ -28,4 +28,6 @@ if __name__ =='__main__':
     print("Execution time taken:", time.time()-start, "sec")              
 ```
 
+# Images of the results:
+![]
 **Authors / Maintained by: Priyanka Roy**
