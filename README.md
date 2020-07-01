@@ -28,6 +28,4 @@ if __name__ =='__main__':
     print("Execution time taken:", time.time()-start, "sec")              
 ```
 
-### Images of the results:
-! [img](talpa/plots/LogisticRegression_metrics.png)
 **Authors / Maintained by: Priyanka Roy**
