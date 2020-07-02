@@ -1,7 +1,0 @@
-2020-07-01 17:11:03 DatasetReader INFO     Dataset Folder path F:\Thesis\talpa\coding_challenge\talpa\dataset
-2020-07-01 17:11:03 DatasetReader INFO     Dataset Filepath F:\Thesis\talpa\coding_challenge\talpa\dataset\data_case_study.csv
-2020-07-01 17:11:18 DatasetReader INFO     Logistic Regression Accuracy and F1score in each split 0.9954604626322641, 0.995463893911648:
-2020-07-01 17:11:26 DatasetReader INFO     Logistic Regression Accuracy and F1score in each split 0.9952268099736307, 0.9952289157708895:
-2020-07-01 17:11:35 DatasetReader INFO     Logistic Regression Accuracy and F1score in each split 0.9962615574618645, 0.9962635572026517:
-2020-07-01 17:11:45 DatasetReader INFO     Logistic Regression Accuracy and F1score in each split 0.996495210120498, 0.9964957876147087:
-2020-07-01 17:11:54 DatasetReader INFO     Logistic Regression Accuracy and F1score in each split 0.9960612837544645, 0.9960637645013838:

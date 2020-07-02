@@ -9,10 +9,11 @@ from sklearn.model_selection import StratifiedShuffleSplit
 from talpa.classifiers import *
 from talpa.metrics import *
 from sklearn.preprocessing import StandardScaler
-from talpa.core.data_checks import _check_data, is_numeric
+from talpa.core.data_checks import check_data, is_numeric
 
-
-logging.basicConfig(filename='reader1.log' ,level=logging.INFO, format='%(asctime)s %(name)s %(levelname)-8s %(message)s',datefmt='%Y-%m-%d %H:%M:%S', filemode='w')
+logfile_dir =os.path.join(os.getcwd(), "logs")
+logfile = os.path.join(logfile_dir, 'Logs.log')
+logging.basicConfig(filename=logfile ,level=logging.INFO, format='%(asctime)s %(name)s %(levelname)-8s %(message)s',datefmt='%Y-%m-%d %H:%M:%S', filemode='w')
 
 class DatasetReader():
 
@@ -29,25 +30,51 @@ class DatasetReader():
         """
         #self.dr_logger =logging.basicConfig(level=logging.INFO)
         self.dr_logger = logging.getLogger(DatasetReader.__name__)
-
+        self.accuracy =  []
+        self.f1scr =[]
         if dataset_folder is not None:
             self.dirname = os.path.join(os.getcwd(), dataset_folder)
             self.dr_logger.info("Dataset Folder path {}".format(self.dirname))
             if not os.path.exists(self.dirname):
-                self.dr_logger("Path given for dataset does not exist {}".format(self.dirname))
+                self.dr_logger.info("Path given for dataset does not exist {}".format(self.dirname))
                 self.dirname = None
             else:
                 self.filename = os.path.join(self.dirname, filename)
                 self.dr_logger.info("Dataset Filepath {}".format(self.filename))
 
 
+    def fit_predict(self, model, X_train, y_train, X_test, y_test, classifier_name):
+        '''
+
+        :param model: Classifier to be fitted
+        :param X_train:   Dataframe of shape (n_samples, n_features)
+        :param y_train:   Dataframe of shape (n_samples, 1)
+        :param X_test:    Dataframe of shape (n_samples, n_features)
+        :param y_test:    Dataframe of shape (n_samples, 1)
+        :param classifier_name:  Name of the classifier model
+        :return: Numpy array of accuracy and f1score
+        '''
+        model.fit(X_train, y_train)
+        y_pred = model.predict(X_test)
+        acc = accuracy_score(y_test, y_pred)
+        f1score = f1_measure(y_test, y_pred)
+        self.dr_logger.info("Accuracy and F1score in each split for {} {}, {}:".format(classifier_name, acc, f1score))
+
+        return acc, f1score
+
 
     def execute_model(self, modelname, df):
+        '''
+        This function will execute the model based on the model name provided and the dataframe of the datasets
+        :param modelname: Classifier name that needs to be run
+        :param df:  Dataframe of the datasets
+        :return:
+        '''
         X = df.iloc[:, :-1]
         y = df.iloc[:, -1]
 
         if modelname == "LogisticRegression" or modelname == "KNN":
-            print(modelname)
+            self.dr_logger.info("Performing feature scaling before executing {}".format (modelname))
             scaler = StandardScaler()
             scaler.fit(df.drop('activity', axis=1))
 
@@ -58,8 +85,6 @@ class DatasetReader():
 
 
         sss = StratifiedShuffleSplit(n_splits=5, test_size=0.2, random_state=0)
-        accuracy = []
-        f1scr =[]
 
         for train_index, test_index in sss.split(X, y):
             X_train, X_test = X.iloc[train_index], X.iloc[test_index]
@@ -67,64 +92,55 @@ class DatasetReader():
 
             if modelname == 'GradientBoost':
                 clf = GradientBoostDetector(max_depth=5, n_estimators=100, random_state=0)
-                clf.fit(X_train, y_train)
-                y_pred = clf.predict(X_test)
-
-                accuracy.append(accuracy_score(y_test, y_pred))
-                f1scr.append(f1_measure(y_test, y_pred))
-                self.dr_logger.info("GradientBoost Accuracy and F1score in each split {}, {}:".format( accuracy_score(y_test, y_pred), f1_score(y_test, y_pred, average='weighted')))
+                acc, f1 = self.fit_predict(clf, X_train, y_train, X_test, y_test, modelname)
+                self.accuracy.append(acc)
+                self.f1scr.append(f1)
 
             elif modelname == 'RandomForest':
-
                 rf = RandomForestDetector(max_depth=7, n_estimators=50, random_state=0)
-                #rf = RandomForestDetector(max_depth=5, random_state=0)
-                rf.fit(X_train, y_train)
-                y_pred = rf.predict(X_test)
-                accuracy.append(accuracy_score(y_test, y_pred))
-                f1scr.append(f1_measure(y_test, y_pred))
-                self.dr_logger.info("Random Forest Accuracy and F1score in each split {}, {}:".format( accuracy_score(y_test, y_pred), f1_score(y_test, y_pred, average='weighted')))
-                #print("Random Forest Accuracy:", accuracy_score(y_test, y_pred))
+                acc, f1 =self.fit_predict(rf, X_train, y_train, X_test, y_test, modelname)
+                self.accuracy.append(acc)
+                self.f1scr.append(f1)
 
             elif modelname == 'LogisticRegression':
                 logreg = LogisticRegressionDetector(random_state=0)
-                logreg.fit(X_train, y_train)
-                y_pred = logreg.predict(X_test)
-                accuracy.append(accuracy_score(y_test, y_pred))
-                f1scr.append(f1_measure(y_test, y_pred))
-                self.dr_logger.info("Logistic Regression Accuracy and F1score in each split {}, {}:".format( accuracy_score(y_test, y_pred), f1_score(y_test, y_pred, average='weighted')))
-                #print("Logistic Regression Accuracy:", accuracy_score(y_test, y_pred))
+                acc, f1 = self.fit_predict(logreg, X_train, y_train, X_test, y_test, modelname)
+                self.accuracy.append(acc)
+                self.f1scr.append(f1)
 
             elif modelname == 'KNN':
                 knn = KNeighborsDetector(n_neighbors=3)
-                knn.fit(X_train, y_train)
-                y_pred = knn.predict(X_test)
-                accuracy.append(accuracy_score(y_test, y_pred))
-                f1scr.append(f1_measure(y_test, y_pred))
-                self.dr_logger.info("KNN Accuracy and F1score in each split {}, {}:".format( accuracy_score(y_test, y_pred), f1_score(y_test, y_pred, average='weighted')))
-                print("KNN Accuracy:", accuracy_score(y_test, y_pred))
+                acc, f1 =self.fit_predict(knn, X_train, y_train, X_test, y_test, modelname)
+                self.accuracy.append(acc)
+                self.f1scr.append(f1)
 
             elif modelname == 'XGBoost':
                 xgb = XGBClassification()
-                xgb.fit(X_train, y_train)
-                y_pred = xgb.predict(X_test)
-                accuracy.append(accuracy_score(y_test, y_pred))
-                f1scr.append(f1_measure(y_test, y_pred))
-                self.dr_logger.info("XGB Accuracy and F1score in each split {}, {}:".format( accuracy_score(y_test, y_pred), f1_score(y_test, y_pred, average='weighted')))
-                print("XGB Accuracy:", accuracy_score(y_test, y_pred))
-        acc_mean = np.array(accuracy).mean()
-        f1_mean = np.array(f1scr).mean()
+                acc, f1 =self.fit_predict(xgb, X_train, y_train, X_test, y_test, modelname)
+                self.accuracy.append(acc)
+                self.f1scr.append(f1)
+
+        acc_mean = np.array(self.accuracy).mean()
+        f1_mean = np.array(self.f1scr).mean()
         df_metrics = pd.DataFrame({'Accuracy':[acc_mean] , 'F1score': [f1_mean]})
         plot_metrics(modelname, df_metrics)
-        print("Final Accuracy of ", modelname , np.array(accuracy).mean(), "F1Score:", f1_mean)
+        print("Final Accuracy of ", modelname , acc_mean, "F1Score:", f1_mean)
 
+                                                
     def check_data_validity(self, model_name):
+        '''
+        This function will check if the dataset consist of missing or null values and then call the model execute function
+        :param model_name: Classifier name that needs to be run
+        :return:
+        '''
+
         df = pd.read_csv(self.filename, parse_dates=['timestamp'])
         df.set_index('timestamp', inplace=True)
         visualise_mising_values(df)
         df = df.fillna(0)
         # Check if dataset has null values and if it has all numeric values
-        _check_data(df)
-        print(df.info())
+        check_data(df)
+        #self.dr_logger.info("Dataframe information : {}".format(df.info()))
 
         # Plot the distribution of labels to check if it is has imabalanced or balanced distribution of classes
         # targetclass_distribution(df)

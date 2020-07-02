@@ -1,6 +1,7 @@
 from sklearn.ensemble import GradientBoostingClassifier
 import pandas as pd
 from talpa.core import MetaClassifier
+import logging
 
 class GradientBoostDetector(MetaClassifier):
 
@@ -60,6 +61,8 @@ class GradientBoostDetector(MetaClassifier):
         [1] More information: https://scikit-learn.org/stable/modules/generated/sklearn.ensemble.GradientBoostingClassifier.html
         '''
         super().__init__()
+
+        self.logger = logging.getLogger(GradientBoostDetector.__name__)
         self._n_estimators = n_estimators
         self._learning_rate = learning_rate
         self._criterion = criterion
@@ -80,6 +83,7 @@ class GradientBoostDetector(MetaClassifier):
         self._subsample =subsample
         self._init = init
         self.model = None
+        self.logger.info("Intialising classifier")
 
     def fit(self, data, labels=None, **kwargs):
         '''
@@ -91,6 +95,7 @@ class GradientBoostDetector(MetaClassifier):
         :param kwargs: Keyword arguments for classification of the given data
         :return: self : Fitted estimator.
         '''
+
         self.model = GradientBoostingClassifier(n_estimators=self._n_estimators, max_depth=self._max_depth, random_state=self._random_state)
         X = data.values
         if labels is not None:

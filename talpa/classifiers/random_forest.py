@@ -1,6 +1,7 @@
 from sklearn.ensemble import RandomForestClassifier
 import pandas as pd
 from talpa.core import MetaClassifier
+import logging
 
 class RandomForestDetector(MetaClassifier):
 
@@ -52,7 +53,7 @@ class RandomForestDetector(MetaClassifier):
         [1] More information: https://scikit-learn.org/stable/modules/generated/sklearn.ensemble.GradientBoostingClassifier.html
         '''
         super().__init__()
-
+        self.logger = logging.getLogger(RandomForestDetector.__name__)
         self._n_estimators = n_estimators
         self._criterion = criterion
         self._max_depth =max_depth
@@ -71,6 +72,7 @@ class RandomForestDetector(MetaClassifier):
         self._ccp_alpha = ccp_alpha
         self._max_samples = max_samples
         self.model = None
+        self.logger.info("Intialising classifier")
 
 
     def fit(self, data, labels=None, **kwargs):
@@ -85,7 +87,6 @@ class RandomForestDetector(MetaClassifier):
         '''
 
         self.model = RandomForestClassifier(n_estimators=self._n_estimators, max_depth=self._max_depth, criterion=self._criterion)
-
         X = data.values
         if labels is not None:
             y = labels.values

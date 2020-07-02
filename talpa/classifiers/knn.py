@@ -1,6 +1,7 @@
 from sklearn.neighbors import KNeighborsClassifier
 import pandas as pd
 from talpa.core import MetaClassifier
+import logging
 
 class KNeighborsDetector(MetaClassifier):
 
@@ -36,6 +37,7 @@ class KNeighborsDetector(MetaClassifier):
 
         '''
         super().__init__()
+        self.logger = logging.getLogger(KNeighborsDetector.__name__)
         self._n_neighbors = n_neighbors
         self._weights = weights
         self._algorithm = algorithm
@@ -45,6 +47,7 @@ class KNeighborsDetector(MetaClassifier):
         self._metric_params = metric_params
         self._n_jobs = n_jobs
         self.model = None
+        self.logger.info("Intialising classifier")
 
     def fit(self, data, labels=None, **kwargs):
         '''

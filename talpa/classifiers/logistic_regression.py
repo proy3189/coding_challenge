@@ -1,6 +1,7 @@
 from sklearn.linear_model import LogisticRegression
 import pandas as pd
 from talpa.core import MetaClassifier
+import logging
 
 class LogisticRegressionDetector(MetaClassifier):
 
@@ -44,6 +45,7 @@ class LogisticRegressionDetector(MetaClassifier):
         [1] More information: https://scikit-learn.org/stable/modules/generated/sklearn.linear_model.LogisticRegression.html
 
         '''
+        self.logger = logging.getLogger(LogisticRegressionDetector.__name__)
 
         super().__init__()
         self._penalty = penalty
@@ -63,6 +65,7 @@ class LogisticRegressionDetector(MetaClassifier):
         self._class_weight =class_weight
         self._l1_ratio = l1_ratio
         self.model = None
+        self.logger.info("Intialising classifier")
 
 
     def fit(self, data, labels=None, **kwargs):

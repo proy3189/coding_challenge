@@ -1,6 +1,7 @@
 import xgboost as xgb
 from talpa.core import MetaClassifier
 import  pandas as pd
+import logging
 
 
 class XGBClassification(MetaClassifier):
@@ -25,9 +26,11 @@ class XGBClassification(MetaClassifier):
         '''
 
         super().__init__()
+        self.logger = logging.getLogger(XGBClassification.__name__)
         self._objective = objective
         self._random_state = random_state
         self.model = None
+        self.logger.info("Intialising classifier")
 
 
     def fit(self, data, labels=None, **kwargs):
@@ -42,7 +45,6 @@ class XGBClassification(MetaClassifier):
         '''
 
         self.model = xgb.XGBClassifier(objective=self._objective, random_state=self._random_state)
-        print("Par", self.model.get_params())
 
         X = data.values
         if labels is not None:

@@ -28,4 +28,10 @@ if __name__ =='__main__':
     print("Execution time taken:", time.time()-start, "sec")              
 ```
 
+Execution time taken by each classifier:
+
+|RandomForest|LogisticRegression|GradientBoost|XGBoost|KNN|
+|---|---|---|---|---|
+|22.7308 sec|51.6076 sec|631.827 sec|188.0264 sec|688.119 sec|
+
 **Authors / Maintained by: Priyanka Roy**
