@@ -154,7 +154,7 @@ class DatasetReader():
 if __name__ =='__main__':
     start = time.time()
     filename = 'data_case_study.csv'
-    model_name = "LogisticRegression"
+    model_name = "XGBoost"
 
     read_data = DatasetReader("dataset", filename)
     read_data.check_data_validity(model_name)
