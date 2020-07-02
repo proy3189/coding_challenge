@@ -9,7 +9,6 @@ Clone the repository and install talpa using:
 
 "python setup.py install"  Or  "python setup.py sdist"
 
-pip install ./dist/talpa-1.0.tar.gz
 
 #### General Instructions :
 1. Datasets must be stored in folder "dataset"
