@@ -115,6 +115,7 @@ class DatasetReader():
                 self.f1scr.append(f1)
 
             elif modelname == 'XGBoost':
+                # conda install -c anaconda py-xgboost
                 xgb = XGBClassification()
                 acc, f1 =self.fit_predict(xgb, X_train, y_train, X_test, y_test, modelname)
                 self.accuracy.append(acc)
@@ -154,7 +155,7 @@ class DatasetReader():
 if __name__ =='__main__':
     start = time.time()
     filename = 'data_case_study.csv'
-    model_name = "XGBoost"
+    model_name = "LogisticRegression"
 
     read_data = DatasetReader("dataset", filename)
     read_data.check_data_validity(model_name)
