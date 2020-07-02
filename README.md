@@ -33,4 +33,9 @@ Execution time taken by each classifier:
 |---|---|---|---|---|
 |22.7308 sec|51.6076 sec|631.827 sec|188.0264 sec|688.119 sec|
 
+The "plot" folder will contain the following information:
+1. data_distribution.png - shows how the data is distributed in the given dataset
+2. Missing_Values_Heatmap.png - shows the missing values in the given dataset
+3. classifiername_metrics.png - shows the performance of the given classifier with respect to accuracy and F1 score
+
 **Authors / Maintained by: Priyanka Roy**
