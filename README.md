@@ -1,4 +1,3 @@
-# Talpa coding_challenge
 ## Generate predictions for Mining data
 
 _Repository for generating predictions for Mining data_.
